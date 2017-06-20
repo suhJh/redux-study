@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="kr">
+  <head>
+    <title>my test</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+  </head>
+  <body>
+
+    <div class="container">
+      <div class="page-header">
+        <h1>Simple App <small>테스트 페이지</small></h1>
+      </div>
+
+
+      <div class="row">
+        <div id="loginBox" class="col-md-4 col-md-offset-8">
+
+          <div class="modal fade" id="regFormModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title" id="exampleModalLabel">회원가입</h4>
+                </div>
+                <div class="modal-body">
+                  <form>
+                    <div class="form-group">
+                      <label for="regUserId" class="control-label">아이디 <span id="duplCheck"></span></label>
+                      <input type="text" class="form-control" id="regUserId">
+                    </div>
+                    <div class="form-group">
+                      <label for="regUserName" class="control-label">이름:</label>
+                      <input type="text" class="form-control" id="regUserName">
+                    </div>
+                    <div class="form-group">
+                      <label for="regUserPw" class="control-label">비밀번호:</label>
+                      <input type="text" class="form-control" id="regUserPw">
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+                  <button id="regUserBtn" type="button" class="btn btn-primary">등록</button>
+                </div>
+              </div>
+            </div>
+          </div><!--//modal-->
+
+          <table class="table">
+            <tbody id="loginPanel">
+              <tr>
+                <th>아이디</th>
+                <th><input id="inputId" type="text" class="form-control"></th>
+              </tr>
+              <tr>
+                <th>비밀번호</th>
+                <th><input id="inputPw" type="text" class="form-control"></th>
+              </tr>
+              <tr>
+                <th colspan="2" class="text-center">
+                  <button type="button" id="loginBtn" class="btn btn-default" style="margin-right: 15px;">로그인</button>
+                  <button type="button" id="callRegFormBtn" class="btn btn-info" style="margin-right: 15px;">회원가입</button>
+                </th>
+              </tr>
+            </tbody>
+            <tbody id="myInfoPanel" style="display: none;">
+              <tr>
+                <th>
+                  <span id="userId"></span>님 환영합니다.
+                </th>
+              </tr>
+              <tr>
+                <th colspan="2" class="text-center">
+                  <button type="button" id="logoutBtn" class="btn btn-danger">로그아웃</button>
+                </th>
+              </tr>
+            </tbody>
+          </table>
+        </div><!--//id="loginComponent" -->
+      </div><!--//class="row"-->
+
+      <div id="postContainer">
+
+        <div class="modal fade" id="regPostModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+            <div class="modal-dialog">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  <h4 class="modal-title">글작성</h4>
+                </div>
+                <div class="modal-body">
+                  <div class="form-group">
+                    <label for="title" class="control-label">제목</label>
+                    <input type="text" class="form-control" id="title">
+                  </div>
+                  <div class="form-group">
+                    <label for="content" class="control-label">내용:</label>
+                    <textarea type="text" class="form-control" id="content" rows="5"></textarea>
+                  </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+                  <button id="regPost" type="button" class="btn btn-primary">등록</button>
+                </div>
+              </div>
+            </div>
+          </div><!--//modal-->
+          <div class="row">
+            <button id="callRegPostModalBtn" type="button" class="btn btn-primary" style="display: none;">글쓰기</button>
+          </div>
+          <div id="timeline">
+            <script id="postTemplate" type="text/template">
+              <div class="jumbotron row">
+                <h2><%=title%>      <small>(<%=writer%>)</small></h2>
+                <p><%=content%></p>
+                <% if (writer == loginId) { %>
+                <p>
+                  <a class="btn btn-primary btn-sm" href="#" role="button" data-id="<%=id%>">수정</a>
+                  <a class="btn btn-danger btn-sm" href="#" role="button" data-id="<%=id%>">삭제</a>
+                </p>
+                <% } %>
+                <% if (comments) { 
+                  for (var i = 0; i < comments.length; i++) { %>
+                    <p><%=comments[i].content%>(<%=comments[i].writer%>)</p>
+                 <% }
+                } %>
+                <p><input type="text" class="form-control"><button type="button" class="btn btn-sm commentBtn" data-id="<%=id%>">댓글쓰기</button></p>
+              </div>
+            </script>
+          </div>
+      </div>
+    </div>
+
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/json2/20160511/json2.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.24.2/babel.min.js"></script>  
+    <script src="include/immutable.js"></script>
+    <script src="include/redux.js"></script>
+    <script src="src/redux-thunk.js"></script>
+    <script src="src/reselector.js"></script>
+    <script src="src/mod.js"></script>
+
+    <script src="simple/reducers.js"></script>
+    <script src="simple/store.js"></script>
+
+
+    <script src="simple/components/LoginBox.js"></script>
+    <script src="simple/components/PostContainer.js"></script>
+
+
+    <script src="simple/simple.js"></script>
+
+  </body>
+</html>

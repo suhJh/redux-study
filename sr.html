@@ -1,0 +1,108 @@
+<html lang="kr">
+  <head>
+    <title>my test</title>
+    <!--
+    <script src="https://unpkg.com/lodash@4.16.6"></script>
+    -->
+  </head>
+  <body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/json2/20160511/json2.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.24.2/babel.min.js"></script>  
+    <script src="include/redux.js"></script>
+    <script src="src/reselector.js"></script>
+    <script src="include/immutable.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="src/mod.js"></script>
+    <script src="src/sr.js"></script>
+
+    <header>
+      <h1>변경관리</h1>
+    </header>
+    <hr>
+    <div style="min-height: 400px;">
+      <table cellpadding="0" cellspacing="0" border="1" style="width: 100%;">
+        <colgroup>
+          <col width="8%" />
+          <col width="15%" />
+          <col width="15%" />
+          <col width="15%" />
+          <col width="15%" />
+          <col width="15%" />
+          <col width="15%" />
+        </colgroup>
+        <thead>
+          <th>번호</th>
+          <th>SR번호</th>
+          <th>SUBSR번호</th>
+          <th>담당자</th>
+          <th>SUBSR상태</th>
+          <th>이관단계</th>
+          <th>배포상태</th>
+        </thead>
+        <tbody id="container"></tbody>
+      </table>
+    </div>
+    
+    <div style="float: right;" id="actionGroup">
+      <button type="button" id="completeSubsr">수행완료</button>
+      <button type="button" id="createSubsr">SUBSR생성</button>
+      <button type="button" id="demoteSubsr">Demote요청</button>
+      <button type="button" id="reqDstrb">배포요청</button>
+    </div>
+
+
+    <div id="createSubsrPop" style="display: none; position: absolute; top: 50px; left: 100px; width: 400px; height: 220px; background: white; border: 1px solid black; padding: 15px;">
+      <h3>subsr등록 팝업<span id="closeBtn" style="float: right; cursor: pointer;">X</span></h4>
+      <table cellpadding="0" cellspacing="0" border="1" style="width: 100%; height: 150px;">
+        <thead>
+          <tr>
+            <th>구분</th>
+            <th>입력</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>subsr번호</td>
+            <td><input type="text" id="subsrNo" /></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="float: right;"><button id="regBtn">등록</button></div>
+    </div>
+
+
+    <script type="text/template" id="tmpl">
+    <%
+      if (!o.list || o.list.length == 0) {
+    %>
+      <tr>
+        <td colspan="7"><h4 style="text-align: center; vertical-align: middle; padding: 5px;">아직 SUBSR이 없습니다.</h4></td>
+      </tr>
+    <%
+      } else {
+        for (var i = 0; i < o.list.length; i++) {
+          var each = o.list[i];
+    %>
+      <tr data-id="<%=each.subsrNo%>">
+        <td>
+          <% if (each.progStat != 'SUBSR종료') {%>
+            <input type="checkbox" value="<%=each.index%>" data-index="<%=i%>" <% if(each.checked) {%>checked="checked"<%}%>><%=i%>
+          <%}%>
+        </td>
+        <td><%=o.srNo%></td>
+        <td><%=each.subsrNo%></td>
+        <td><%=each.chngChrpeNm%></td>
+        <td><%=each.progStat%></td>
+        <td><%=each.trfrStge%></td>
+        <td><%=each.dstrbStat%></td>
+      </tr>
+   <%   }
+      }
+    %>
+    </script>
+  </body>
+</html>

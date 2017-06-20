@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="kr">
+  <head>
+    <title>my test</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+  </head>
+  <body>
+    <div id="App" class="container">
+      <div class="page-header">
+        <h1>NEW ITSM <small>테스트 페이지</small></h1>
+      </div>
+
+      <div id="progress" style="position: absolute; top: 200px; left: 200px; display: none; width: 400px; height: 150px;" class="container">
+        <div class="well well-lg">
+          <h1>서버에서 데이터 받고 있는 중</h1>
+        </div>
+      </div>
+
+      <div class="row">
+        <div id="loginBox" class="col-md-4 col-md-offset-8">
+          <table class="table">
+              <tr>
+                <th>사번</th>
+                <th>
+                  <select id="sabun" class="form-control">
+                    <script type="text/template" id="sabun_tmpl">
+                      <option 
+                        value="<%=sabun%>" 
+                        <%if(selected == true) {%>
+                        selected="selected"
+                        <%}%>
+                      >
+                      <%=name%><%if(selected == true) {%>(로그인)<%}%>
+                      </option>
+                    </script>
+                  </select>
+                </th>
+              </tr>
+              <tr>
+                <th colspan="2" class="text-center">
+                  <button type="button" id="loginBtn" class="btn btn-default" style="margin-right: 15px;">로그인</button>
+                  <button type="button" id="logoutBtn" class="btn btn-danger">로그아웃</button>
+                </th>
+              </tr>
+          </table>
+        </div><!--//id="loginComponent" -->
+      </div><!--//class="row"-->
+
+      <div id="srContainer">
+        <div class="row">
+          <div class="col-md-12">
+            <ul class="nav nav-tabs">
+              <li id="sr_all_btn" role="presentation" class="active"><a href="#">SR전체목록</a></li>
+              <li id="sr_process_btn" role="presentation"><a href="#">수행 중</a></li>
+              <li id="sr_completed_btn" role="presentation"><a href="#">완료</a></li>
+              <li id="sr_regist_btn" role="presentation"><a href="#">SR등록</a></li>
+            </ul>
+          </div><!--//class="row"-->
+        </div>
+
+        <div id="srListContainer" class="row">
+          <div class="col-md-12" style="margin-top: 20px;">
+            <table class="table table-striped">
+              <colgroup>
+                <col width="8%" />
+                <col width="20%" />
+                <col width="20%"/>
+                <col width="15%"/>
+                <col width="20%"/>
+                <col width="20%"/>
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>번호</th>
+                  <th>SR번호</th>
+                  <th>SR제목</th>
+                  <th>진행상태</th>
+                  <th>등록자</th>
+                  <th>등록일</th>
+                </tr>
+              </thead>
+              <tbody id="srListComponent">
+                <script type="text/template" id="sr_tmpl">
+                  <tr>
+                    <td><%=index%></td>
+                    <td><%=srNo%></td>
+                    <td><%=title%></td>
+                    <td><%=progStatNm%></td>
+                    <td><small><%=regpeNm%>(<%=regpeSabun%>)</small></td>
+                    <td><%=regpeDtm%></td>
+                  </tr>
+                </script>
+              </tbody>
+            </table>
+          </div><!--id="col-md-12"-->
+        </div><!-- id="srListComponent" -->
+
+        <div id="regSrComponent" style="display: none;" class="row">
+          <div class="col-md-12" style="margin-top: 20px;">
+            <table class="table table-bordered">
+              <colgroup>
+                <col width="15%" />
+                <col width="35%"/>
+                <col width="15%"/>
+                <col width="35%"/>
+              </colgroup>
+              <tbody>
+                <tr>
+                  <th>SR번호</th>
+                  <td>
+                    <div class="input-group" style="width: 100%;">
+                      <input id="srNo" type="text" class="form-control" disabled="disabled" placeholder="자동생성됩니다."/>
+                    </div>
+                  </td>
+                  <th>등록자</th>
+                  <td>
+                    <div class="input-group" style="width: 100%;">
+                      <input id="regpeNm" type="text" class="form-control" disabled="disabled" />
+                      <input id="regpeSabun" type="hidden" disabled="disabled" />
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>제목</th>
+                  <td colspan="3">
+                    <div class="input-group" style="width: 100%;">
+                      <input id="title" type="text" class="form-control" />
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th>내용</th>
+                  <td colspan="3" style="height: 150px;">
+                    <div class="input-group" style="width: 100%;">
+                      <textarea id="con" class="form-control" rows="3"></textarea>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <th colspan="4" class="text-center">
+                    <button type="button" id="submitBtn" class="btn btn-primary" style="margin-right: 15px;">SR등록</button>
+                    <button type="button" id="cancelBtn" class="btn btn-warning">취소</button>
+                  </th>
+                </tr>
+              </tbody>
+            </table>
+          </div><!--//col-md-12-->
+        </div><!--//regSrComponent-->
+
+      </div><!--//id="srContainer"-->
+    </div><!--//id="App" class="container"-->
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/json2/20160511/json2.js"></script>
+    <script
+      src="https://code.jquery.com/jquery-3.2.1.min.js"
+      integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+      crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.24.2/babel.min.js"></script>  
+    <script src="include/immutable.js"></script>
+    <script src="include/redux.js"></script>
+    <script src="src/reselector.js"></script>
+    <script src="src/mod.js"></script>
+
+    <!--util  -->
+    <script src="itsm/util/HttpService.js"></script>
+    <script src="itsm/util/util.js"></script>
+
+    <!-- actions -->
+    <script src="itsm/actions/appActions.js"></script>
+    <script src="itsm/actions/loginActions.js"></script>
+    <script src="itsm/actions/fetchActions.js"></script>
+
+    <!-- reducers -->
+    <script src="itsm/reducers/appReducer.js"></script>
+    <script src="itsm/reducers/usrReducer.js"></script>
+    <script src="itsm/reducers/srReducer.js"></script>
+
+    <!-- store -->
+    <script src="itsm/store.js"></script>
+    
+    <!-- container and component -->
+    <script src="itsm/components/LoginBox.js"></script>
+    <script src="itsm/components/SrContainer.js"></script>
+
+
+
+    <!-- app start -->
+    <script src="itsm/itsm.js"></script>
+
+
+<!--
+    <script src="itsm/util/httpService.js"></script>
+    <script src="itsm/action.js"></script>
+    <script src="itsm/reducers.js"></script>
+    <script src="itsm/components/LoginComponent.js"></script>
+    <script src="itsm/components/SrListComponent.js"></script>
+    <script src="itsm/components/Container.js"></script>
+    <script src="itsm/components/itsm.js"></script>
+  -->
+  <script>
+    (function (exports, $, _) {
+      function ajax (options) {
+        console.log(options);
+      }
+
+      var mod = {};
+      mod.define = function (includes) {
+        (function (check) {
+          if (typeof check !== 'object') throw new Error('정의는 순수 오브젝트형태로만 가능합니다.');
+          if (check.validation) throw new Error('validation은 있으면 안됩니다.');
+          if (check.initializer) throw new Error('초기화 함수인 initializer는 오버라이드 하지 말아주세요.');
+          if (!check.url) throw new Error('url은 필수입니다.');
+        })(includes);
+
+        var result = function () {
+          this.validation.apply(this, arguments);
+          this.initializer.apply(this, arguments);
+        }
+        
+        result.fn = result.prototype;
+        result.include = function (obj) {
+          _.extend(result.fn, obj);
+        };
+
+        result.proxy    = function(func){ return $.proxy(func, this); };
+        result.fn.proxy = result.proxy; 
+
+        var options = {};
+
+        result.include({
+
+          blockUI: false,
+          showProgressBar: false,
+
+          validation: function (obj) {
+
+          },
+          initializer: function (obj) {
+            console.log('mark1!', obj);
+            if (obj.queryParameter) {
+              options.urlParameter = $.param(obj.queryParameter);
+            }
+            if (obj.data) {
+              options.data = JSON.stringify(obj.data);
+            }
+          },
+          before: function (callback) {
+            if (!callback) callback = function (serverData) {};
+            options['beforeSend'] = this.proxy(callback);
+            console.log('in before', options);
+            return this;
+          },
+          success: function (callback) {
+            if (!callback) callback = function (serverData) {};
+            options['success'] = this.proxy(callback);
+            console.log('in success', options);
+            return this;
+          },
+          send: function () {
+            console.log('in send', options);
+            ajax(options);
+          }
+        });
+
+        return new result(includes);
+      };
+      exports.service = mod;
+    })(window, jQuery, _);
+
+
+    window.service.define({
+      url: '/init',
+      queryParameter: {
+        a: 1,
+        b: 2,
+        c: 3,
+        arr: [1,2,3,4],
+        obj: { d: 4, e: 5}
+      },
+      data: {
+        a: 1,
+        b: 2,
+        c: 3,
+        arr: [1,2,3,4],
+        obj: { d: 4, e: 5}
+      }
+    })
+    .before()
+    .success()
+    .send();
+
+
+
+  </script>
+  </body>
+</html>

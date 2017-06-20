@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": false,
+        "sourceRoot": "./typescripts_dist",
+        "inlineSourceMap": false,
+        "inlineSources": false
+    },
+    "include": [
+        "typescripts/**/*",
+        "redux_hard/**/*"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/*.spec.ts"
+    ]
+}
