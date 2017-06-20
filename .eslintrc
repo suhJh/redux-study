@@ -1,0 +1,25 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": [
+    "eslint-plugin-react",
+    "jsx-a11y"
+  ],
+  "rules": {
+    "semi": 2,
+    "linebreak-style": [2, "windows"]
+  },
+  "settings": {
+    "react": {
+      "createClass": "createClass",
+      "pragma": "React",
+      "version": "15.0"
+    }
+  },
+  "extends": "eslint-config-airbnb"
+}
