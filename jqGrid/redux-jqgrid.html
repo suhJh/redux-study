@@ -1,0 +1,135 @@
+<html lang="kr">
+<head>
+    <meta charset="utf-8">
+    <script type="text/ecmascript" src="js/jquery-1.7.2.min.js"></script> 
+    <script
+        src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"
+        integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30="
+        crossorigin="anonymous"></script>
+    <script type="text/ecmascript" src="js/i18n/grid.locale-en.js"></script>
+    <script type="text/ecmascript" src="js/jquery.jqGrid.min.js"></script>
+    <script type="text/ecmascript" src="plugins/grid.addons.js"></script>
+    <script type="text/ecmascript" src="plugins/grid.postext.js"></script>
+    <script type="text/ecmascript" src="plugins/grid.setcolumns.js"></script>
+    <script type="text/ecmascript" src="plugins/jquery.contextmenu.js"></script>
+    <script type="text/ecmascript" src="plugins/jquery.searchFilter.js"></script>
+    <script type="text/ecmascript" src="plugins/jquery.tablednd.js"></script>
+    <script type="text/ecmascript" src="plugins/ui.multiselect.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script> 
+    <link rel="stylesheet" type="text/css" media="screen" href="jquery-ui/jquery-ui.min.css" />
+    <link rel="stylesheet" type="text/css" media="screen" href="css/ui.jqgrid.css" />
+    <script src="redux/redux.js"></script>
+    <script src="redux/redux-thunk.js"></script>
+    <script src="redux/reselector.js"></script>
+</head>
+<body>
+    <table id="jqGrid"></table>
+    <div id="jqGridPager"></div>
+
+    <input type="text" id="gubn1" placeholder="gubn1">
+    <input type="text" id="gubn2" placeholder="gubn2">
+    <input type="text" id="gubn3" placeholder="gubn3">
+    <input type="text" id="gubn4" placeholder="gubn4">
+    <button id="add" type="button">add</button>
+    <input type="filter" id="filterInput" placeholder="filter"/>
+
+    <script type="text/javascript"> 
+
+        var reducer = function (list, action) {
+            switch (action.type) {
+                case 'ADD': return [].concat(list).concat(action.row);
+                case 'CHECKED': 
+                    var index = _.findIndex(list, function (target, me) {
+                        return target.rownum == action.rownum;
+                    });
+                    return [].concat(list.slice(0, index))
+                             .concat(_.extend({}, list[index], { checked: !list[index].checked }))
+                             .concat(list.slice(index + 1));
+                default: return [];
+            }
+        }
+
+        
+        var rootReducer = Redux.combineReducers({
+            list: reducer
+        });
+
+        var store = Redux.createStore(rootReducer, Redux.applyMiddleware(ReduxThunk['default']));
+
+        $(document).ready(function () {
+
+            $('#add').click(function () {
+                store.dispatch({
+                    type: 'ADD',
+                    row: {
+                        rownum: _.uniqueId(),
+                        gubn1: $('#gubn1').val(),
+                        gubn2: $('#gubn2').val(),
+                        gubn3: $('#gubn3').val(),
+                        gubn4: $('#gubn4').val()
+                    }
+                });
+            });
+
+            $('#jqGrid').delegate('[type="checkbox"]', 'click', function (e) {
+                var id = $(e.target).data('id');
+                store.dispatch({
+                    type: 'CHECKED',
+                    rownum: id
+                });
+            });
+
+            function checkboxFormatter (a, b, o, d) {
+                var html = '<input data-id="' + o.rownum + '" type="checkbox" ' + (o.checked == true ? 'checked="checked"' : '') + '/>';
+                return html;
+            }
+            var filter;
+
+            $("#jqGrid").jqGrid({
+                //url: 'http://trirand.com/blog/phpjqgrid/examples/jsonp/getjsonp.php?callback=?&qwery=longorders',
+                //mtype: "GET",
+                datatype: "local",
+                data: store.getState().list,
+                localReader: {
+                    repeatitems: false
+                },
+                colModel: [
+                    { label: 'checked', name: 'check', width: 30, formatter: checkboxFormatter },
+                    { label: 'rownum', name: 'rownum', key: true, width: 75, sorttype: 'integer' },
+                    { label: 'gubn1', name: 'gubn1', width: 75 },
+                    { label: 'gubn2', name: 'gubn2', width: 75 },
+                    { label: 'gubn3', name: 'gubn3', width: 75 },
+                    { label: 'gubn4', name: 'gubn4', width: 75 },
+                ],
+                //sortname: 'rownum',
+                sortable: true,
+				viewrecords: true,
+                width: 780,
+                height: 250,
+                rowNum: 10,
+                pager: "#jqGridPager",
+            });
+
+
+            var timer;
+            $('#filterInput').on('keyup', function () {
+                var self = this;
+                if (timer) { clearTimeout(timer) }
+                timer = setTimeout(function () {
+                    $('#jqGrid').jqGrid('filterinput', self.value);
+                }, 0);
+            })
+
+            store.subscribe(function () {
+
+                $('#jqGrid')
+                //.jqGrid('clearGridData')
+                .jqGrid('setGridParam', {
+                    datatype: 'local', data: store.getState().list
+                }).trigger('reloadGrid');
+            });
+        });
+   </script>
+</body>
+</html>
